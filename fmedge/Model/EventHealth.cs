@@ -5,9 +5,10 @@
     /// </summary>
     public class EventHealth
     {
-        public string building_id;
-        public string inspection_result_cd;
-        public string inspection_result_val;
-        public string inspection_datetime;
+        public string type { get; set; }
+        public string building_id { get; set; }
+        public string inspection_result_cd { get; set; }
+        public string inspection_result_val { get; set; }
+        public string inspection_datetime { get; set; }
     }
 }

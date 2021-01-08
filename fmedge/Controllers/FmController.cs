@@ -1,4 +1,5 @@
 ﻿using fmedge.Model;
+using fmedge.Util;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -36,14 +37,20 @@ namespace fmedge.Controllers
                     return Ok(JsonConvert.SerializeObject(response));
                 }
 
-                Console.WriteLine(value.building_id);
+                Console.WriteLine("Event Status Received" );
                 response.resultCode = "OK";
+
+                string task = await HttpClientTransfer.PostEventStatus(value, type);
+
+                Console.WriteLine(task);
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : status] {ex.Message}");
                 response.resultCode = "NOK";
             }
+
+            Controller.lastReceveDateTime = DateTime.Now;
 
             return Ok(JsonConvert.SerializeObject(response));
         }
@@ -63,12 +70,20 @@ namespace fmedge.Controllers
                     response.resultCode = "NOK";
                     return Ok(JsonConvert.SerializeObject(response));
                 }
+                Console.WriteLine("Event Health Received");
+                response.resultCode = "OK";
+
+                string task = await HttpClientTransfer.PostMiddleWareHealth(value, type);
+
+                Console.WriteLine(task);
             }
             catch(Exception ex)
             {
-
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : health] {ex.Message}");
                 response.resultCode = "NOK";
             }
+
+            Controller.lastReceveDateTime = DateTime.Now;
 
             return Ok(JsonConvert.SerializeObject(response));
         }

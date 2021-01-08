@@ -5,11 +5,12 @@
     /// </summary>
     public class EventStatus
     {
-        public string building_id;
-        public string tag_id;
-        public string present_val;
-        public string point_address;
-        public string protocol_type;
-        public string create_datetime;
+        public string type { get; set; }
+        public string building_id { get; set; }
+        public string tag_id { get; set; }
+        public string present_val { get; set; }
+        public string point_address { get; set; }
+        public string protocol_type { get; set; } 
+        public string create_datetime { get; set; }
     }
 }

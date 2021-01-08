@@ -36,6 +36,11 @@ namespace fmedge
         /// </summary>
         private static string checkInterval;
 
+        /// <summary>
+        /// 데이터 수신 시간차
+        /// </summary>
+        private static string dataReceiveInterval;
+
         public static void Main(string[] args)
         {
             Init().Wait();
@@ -82,7 +87,7 @@ namespace fmedge
         static Task OnDesiredPropertiesUpdate(TwinCollection desiredProperties, object userContext)
         {
             try
-            {
+            {   
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Desired property change:");
                 Console.WriteLine(JsonConvert.SerializeObject(desiredProperties));
 
@@ -110,6 +115,14 @@ namespace fmedge
                     reportedProperties["CheckInterval"] = checkInterval;
 
                     Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Check Interval : {checkInterval}");
+                }                
+
+                if (desiredProperties["DataTimeInterval"] != null)
+                {
+                    dataReceiveInterval = desiredProperties["DataTimeInterval"];
+                    reportedProperties["CheckInterval"] = dataReceiveInterval;
+
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Data Time Interval : {dataReceiveInterval}");
                 }
 
                 if (reportedProperties.Count > 0)
@@ -124,8 +137,8 @@ namespace fmedge
                     controller = null;
                 }
 
-                controller = new Controller(azureWebAppAddress, int.Parse(checkInterval));
-          
+                controller = new Controller(azureWebAppAddress, int.Parse(checkInterval), int.Parse(dataReceiveInterval));
+               
                 CreateHostBuilder(int.Parse(hostPort)).Build().StopAsync();
                 CreateHostBuilder(int.Parse(hostPort)).Build().StartAsync();
             }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using fmedge.Model;
+using fmedge.Util;
+using System;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -9,7 +11,7 @@ namespace fmedge.Controllers
         /// <summary>
         /// Azure Web App의 주소
         /// </summary>
-        public string azureWebAppURL { get; set; } = "https://skt-stg-kc-fm-app.azurewebsites.net";
+        public static string azureWebAppURL { get; set; } = "https://skt-stg-kc-fm-app.azurewebsites.net";
 
         /// <summary>
         /// 
@@ -17,12 +19,19 @@ namespace fmedge.Controllers
         public static DateTime lastReceveDateTime;
 
         /// <summary>
-        /// IBS와 엣지간의 통신 상태를 체크하는 Timer
+        /// KEP 서버 미들웨어와  엣지간의 통신 상태를 체크하는 Timer
         /// </summary>
         private Timer comCheckTimer = null;
 
+        /// <summary>
+        /// Timer Interval
+        /// </summary>
+        private int checkTimeInterval { get; set; } = 30;
 
-        private int timeInterval { get; set; }
+        /// <summary>
+        /// 마지막으로 수신한 데이터의 시간차 기준 시간
+        /// </summary>
+        private int checkDataTimeInterval { get; set; } = 5;
 
         /// <summary>
         /// 생성자
@@ -31,7 +40,7 @@ namespace fmedge.Controllers
         public Controller()
         { 
             comCheckTimer = new Timer();
-            comCheckTimer.Interval = timeInterval;
+            comCheckTimer.Interval = checkTimeInterval * 1000;
 
             comCheckTimer.Elapsed += new ElapsedEventHandler(CommCheck);
             comCheckTimer.Enabled = true;
@@ -41,14 +50,15 @@ namespace fmedge.Controllers
         /// 생성자
         /// 초기화int.Parse(hostPort), azureWebAppAddress, checkInterval
         /// </summary>
-        public Controller(string webapp, int interval )
+        public Controller(string webapp, int interval, int dataTimeInterval )
         {
             comCheckTimer = new Timer();
 
-            timeInterval = interval;
+            checkTimeInterval = interval;
             azureWebAppURL = webapp;
+            checkDataTimeInterval = dataTimeInterval;
 
-            comCheckTimer.Interval = timeInterval * 1000;
+            comCheckTimer.Interval = checkTimeInterval * 1000;
 
             comCheckTimer.Elapsed += new ElapsedEventHandler(CommCheck);
             comCheckTimer.Enabled = true;
@@ -61,42 +71,46 @@ namespace fmedge.Controllers
         /// <param name="e"></param>
         private void CommCheck(object sender, ElapsedEventArgs e)
         {
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : CommCheck] Check Commmunication between IBS and Edge");
+            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : CommCheck] Check Commmunication between Middleware and Edge");
 
-            if (lastReceveDateTime != null)
+            try
             {
-                /*
-                ComHttpPacket comHttpPacket = new ComHttpPacket();
-
-                try
+                if (lastReceveDateTime != null)
                 {
-                    var dataType = "";
+                    string dataType = "";
 
-                    comHttpPacket.building_id = this.buildingID;
-                    comHttpPacket.inspection_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    TimeSpan timeDiff = DateTime.Now - lastReceveDateTime;
 
-                    if (ClientSocket.IsConnected)
-                    {
-                        dataType = "general";
-                        comHttpPacket.inspection_result_val = "connected";
-                        comHttpPacket.inspection_result_cd = "0";
-
-                        Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostWebAPI(azureWebAppURL, comHttpPacket, this.buildingID, this.deviceID, dataType));
-                    }
-                    else
+                    ComHttpPacket comHttpPacket = new ComHttpPacket();
+                    
+                    //수신한 데이터가 없음
+                    if (timeDiff.TotalMinutes >= checkDataTimeInterval)
                     {
                         dataType = "emergency";
-                        comHttpPacket.inspection_result_val = "disconnected";
+
+                        comHttpPacket.building_id = "nise";
+                        comHttpPacket.inspection_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                        comHttpPacket.inspection_result_val = "message not received";
                         comHttpPacket.inspection_result_cd = "1";
 
-                        Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostWebAPI(azureWebAppURL, comHttpPacket, this.buildingID, this.deviceID, dataType));
+                        Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostComStatus(comHttpPacket, dataType));
+                    }
+                    else //정상
+                    {
+                        dataType = "general";
+                        comHttpPacket.building_id = "nise";
+                        comHttpPacket.inspection_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        comHttpPacket.inspection_result_val = "message received";
+                        comHttpPacket.inspection_result_cd = "0";
+
+                        Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostComStatus(comHttpPacket, dataType));
                     }
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : CommCheck] {ex.Message}");
-                }
-                */
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : CommCheck] {ex.Message}");
             }
         }
 

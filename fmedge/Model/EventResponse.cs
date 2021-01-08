@@ -5,6 +5,6 @@
     /// </summary>
     public class EventResponse
     {
-        public string resultCode;
+        public string resultCode { get; set; }
     }
 }
