@@ -138,7 +138,7 @@ namespace fmedge
                 }
 
                 controller = new Controller(azureWebAppAddress, int.Parse(checkInterval), int.Parse(dataReceiveInterval));
-               
+              
                 CreateHostBuilder(int.Parse(hostPort)).Build().StopAsync();
                 CreateHostBuilder(int.Parse(hostPort)).Build().StartAsync();
             }

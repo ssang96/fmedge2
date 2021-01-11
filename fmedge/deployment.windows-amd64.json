@@ -42,7 +42,7 @@
             "status": "running",
             "restartPolicy": "always",
             "settings": {
-              "image": "devadttsopregistry.azurecr.io/fmedge"            
+              "image": "sktstgkcedgeacr.azurecr.io/fmedge"
             }
           }
         }

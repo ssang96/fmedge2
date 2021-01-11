@@ -12,5 +12,12 @@
         public string point_address { get; set; }
         public string protocol_type { get; set; } 
         public string create_datetime { get; set; }
+
+        public override string ToString()
+        {
+            return $"type : {type}, building_id : {building_id}, tag_id : {tag_id }," +
+                $"present_val : {present_val}, point_address : {point_address}, " +
+                $"protocol_type : {protocol_type}, create_datetime : {create_datetime} ";
+        }
     }
 }

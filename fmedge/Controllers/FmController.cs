@@ -37,7 +37,8 @@ namespace fmedge.Controllers
                     return Ok(JsonConvert.SerializeObject(response));
                 }
 
-                Console.WriteLine("Event Status Received" );
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Event Status Received {value.ToString()}");
+
                 response.resultCode = "OK";
 
                 string task = await HttpClientTransfer.PostEventStatus(value, type);
@@ -70,7 +71,8 @@ namespace fmedge.Controllers
                     response.resultCode = "NOK";
                     return Ok(JsonConvert.SerializeObject(response));
                 }
-                Console.WriteLine("Event Health Received");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Event Health Received :  {value.ToString()}");
+
                 response.resultCode = "OK";
 
                 string task = await HttpClientTransfer.PostMiddleWareHealth(value, type);

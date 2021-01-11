@@ -13,7 +13,7 @@ namespace fmedge.Util
     /// HttpClient를 사용해서 Azure Portal의 Web App으로 데이터를 전송하는 클래스
     /// </summary>
     class HttpClientTransfer
-    {
+    {   
         /// <summary>
         /// Azure에 구축된 Web App으로 데이터를 전송하는 함수
         /// </summary>

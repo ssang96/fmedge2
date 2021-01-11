@@ -10,5 +10,11 @@
         public string inspection_result_cd { get; set; }
         public string inspection_result_val { get; set; }
         public string inspection_datetime { get; set; }
+
+        public override string ToString()
+        {
+            return $"type : {type}, building_id : {building_id}, inspection_result_cd : {inspection_result_cd }," +
+                $"inspection_result_val : {inspection_result_val}, inspection_datetime : {inspection_datetime} ";
+        }
     }
 }
