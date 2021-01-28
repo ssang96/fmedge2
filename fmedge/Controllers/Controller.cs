@@ -1,6 +1,7 @@
 ﻿using fmedge.Model;
 using fmedge.Util;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -54,9 +55,9 @@ namespace fmedge.Controllers
         {
             comCheckTimer = new Timer();
 
-            checkTimeInterval = interval;
-            azureWebAppURL = webapp;
-            checkDataTimeInterval = dataTimeInterval;
+            checkTimeInterval       = interval;
+            azureWebAppURL          = webapp;
+            checkDataTimeInterval   = dataTimeInterval;
 
             comCheckTimer.Interval = checkTimeInterval * 1000;
 

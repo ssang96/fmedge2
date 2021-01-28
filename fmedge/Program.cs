@@ -29,7 +29,7 @@ namespace fmedge
         /// <summary>
         /// 이벤트 데이터를 전송 할 Azure Web App의 주소
         /// </summary>
-        private static string azureWebAppAddress;
+        private static string azureWebAppAddress { get; set; } = "https://skt-stg-kc-fm-app.azurewebsites.net";
 
         /// <summary>
         /// 통신 상태 Interval
@@ -90,7 +90,7 @@ namespace fmedge
             {   
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Desired property change:");
                 Console.WriteLine(JsonConvert.SerializeObject(desiredProperties));
-
+                                
                 var reportedProperties = new TwinCollection();
 
                 if (desiredProperties["HostPort"] != null)
@@ -137,8 +137,10 @@ namespace fmedge
                     controller = null;
                 }
 
+                Startup.WebAppAddress = azureWebAppAddress;
+
                 controller = new Controller(azureWebAppAddress, int.Parse(checkInterval), int.Parse(dataReceiveInterval));
-              
+
                 CreateHostBuilder(int.Parse(hostPort)).Build().StopAsync();
                 CreateHostBuilder(int.Parse(hostPort)).Build().StartAsync();
             }

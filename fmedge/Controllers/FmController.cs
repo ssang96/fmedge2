@@ -1,26 +1,30 @@
 ﻿using fmedge.Model;
-using fmedge.Util;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace fmedge.Controllers
 {
-    public class Board
-    {
-        public string title { get; set; }
-        public string text { get; set; }
-    }
-
     [ApiController]
     public class FmController : ControllerBase
     {
+        /// <summary>
+        /// HttpClient 관리 팩토리 클래스 
+        /// </summary>
+        private readonly IHttpClientFactory httpClientFactory;
+
+        /// <summary>
+        /// 생성자(DI)
+        /// </summary>
+        /// <param name="httpClientFactory"></param>
+        public FmController(IHttpClientFactory httpClientFactory)
+        {
+            this.httpClientFactory = httpClientFactory;
+        }
+
         // POST fm/status
         [HttpPost("event/fm/status")]
         public async Task<IActionResult> status([FromBody] EventStatus value)
@@ -39,11 +43,20 @@ namespace fmedge.Controllers
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Event Status Received {value.ToString()}");
 
+                //Status 데이터 생성 및 HttpClient를 통한 데이터 전송 후, 응답
+                var statusRequest = new HttpRequestMessage(HttpMethod.Post, "/event/fm/status");
+                string jsonData = JsonConvert.SerializeObject(value);
+                statusRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                statusRequest.Headers.Add("Type", type);
+                var client = httpClientFactory.CreateClient("azurewebapp");
+
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : PostWebAPI] {jsonData} Send To WebApp");
+
+                var result = await client.SendAsync(statusRequest);
+
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : PostWebAPI] {result.StatusCode} Received From WebApp");
+
                 response.resultCode = "OK";
-
-                string task = await HttpClientTransfer.PostEventStatus(value, type);
-
-                Console.WriteLine(task);
             }
             catch (Exception ex)
             {
@@ -71,13 +84,22 @@ namespace fmedge.Controllers
                     response.resultCode = "NOK";
                     return Ok(JsonConvert.SerializeObject(response));
                 }
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Event Health Received :  {value.ToString()}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Event Health Received :  {value.ToString()}");           
 
-                response.resultCode = "OK";
+                //Health 데이터 생성 및 HttpClient를 통한 데이터 전송 후, 응답
+                var statusRequest = new HttpRequestMessage(HttpMethod.Post, "/event/fm/health");
+                string jsonData = JsonConvert.SerializeObject(value);
+                statusRequest.Content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                statusRequest.Headers.Add("Type", type);
+                var client = httpClientFactory.CreateClient("azurewebapp");
 
-                string task = await HttpClientTransfer.PostMiddleWareHealth(value, type);
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController] {jsonData} Send To WebApp");
 
-                Console.WriteLine(task);
+                var result = await client.SendAsync(statusRequest);
+
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController] {result.StatusCode} Received From WebApp");
+
+                response.resultCode = "OK";      
             }
             catch(Exception ex)
             {
