@@ -1,7 +1,6 @@
 ﻿using fmedge.Model;
 using fmedge.Util;
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Timers;
 
@@ -83,30 +82,24 @@ namespace fmedge.Controllers
                     TimeSpan timeDiff = DateTime.Now - lastReceveDateTime;
 
                     ComHttpPacket comHttpPacket = new ComHttpPacket();
-                    
+
+                    comHttpPacket.building_id = "nise";
+                    comHttpPacket.inspection_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
                     //수신한 데이터가 없음
                     if (timeDiff.TotalMinutes >= checkDataTimeInterval)
                     {
-                        dataType = "emergency";
-
-                        comHttpPacket.building_id = "nise";
-                        comHttpPacket.inspection_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-
+                        dataType = "emergency";                     
                         comHttpPacket.inspection_result_val = "message not received";
                         comHttpPacket.inspection_result_cd = "1";
-
-                        Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostComStatus(comHttpPacket, dataType));
                     }
                     else //정상
                     {
-                        dataType = "general";
-                        comHttpPacket.building_id = "nise";
-                        comHttpPacket.inspection_datetime = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                        dataType = "general";      
                         comHttpPacket.inspection_result_val = "message received";
                         comHttpPacket.inspection_result_cd = "0";
-
-                        Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostComStatus(comHttpPacket, dataType));
                     }
+                    Task<string> task = Task.Run<string>(async () => await HttpClientTransfer.PostComStatus(comHttpPacket, dataType));
                 }
             }
             catch (Exception ex)
