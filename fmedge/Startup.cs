@@ -21,11 +21,11 @@ namespace fmedge
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+                          
             services.AddHttpClient("azurewebapp", httpClient =>
-            {
+            {            
                 httpClient.BaseAddress = new Uri(WebAppAddress);
-                httpClient.Timeout = new TimeSpan(0, 0, 3);
-                httpClient.DefaultRequestHeaders.Clear();
+                httpClient.Timeout = TimeSpan.FromSeconds(3);
             });
         }
 

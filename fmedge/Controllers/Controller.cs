@@ -11,7 +11,7 @@ namespace fmedge.Controllers
         /// <summary>
         /// Azure Web App의 주소
         /// </summary>
-        public static string azureWebAppURL { get; set; } = "https://skt-stg-kc-fm-app.azurewebsites.net";
+        public static string azureWebAppURL { get; set; } = "https://skt-prd-kc-fm-app.azurewebsites.net";
 
         /// <summary>
         /// 
