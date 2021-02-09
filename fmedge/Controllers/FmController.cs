@@ -47,11 +47,11 @@ namespace fmedge.Controllers
 
                 var result = await client.SendAsync(statusRequest);
 
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} [FmController : PostWebAPI]  {jsonData} Send To WebApp & {result.StatusCode} Received From WebApp");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} [FmController : status]  {jsonData} Send To WebApp");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : status] {ex.Message}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : status error] {ex.Message}");
                 response.resultCode = "NOK";
             }
 
@@ -81,11 +81,11 @@ namespace fmedge.Controllers
 
                 var result = await client.SendAsync(statusRequest);
 
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} [FmController : PostWebAPI]  {jsonData} Send To WebApp & {result.StatusCode} Received From WebApp");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} [FmController : health]  {jsonData} Send To WebApp");
             }
             catch(Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : health] {ex.Message}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : health error] {ex.Message}");
                 response.resultCode = "NOK";
             }
 
