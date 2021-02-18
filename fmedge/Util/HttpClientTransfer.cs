@@ -3,7 +3,6 @@ using fmedge.Model;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
-using System.Security.Authentication;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -28,29 +27,14 @@ namespace fmedge.Util
                 
                 StringContent data = new StringContent(json, Encoding.UTF8, "application/json");
 
-                if (webappURL.ToUpper().Contains("HTTPS"))
-                {
-                    var handler = new HttpClientHandler()
-                    {
-                        SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls
-                    };
+                client = new HttpClient();
 
-                    client = new HttpClient(handler);
-                }
-                else
-                {
-                    client = new HttpClient();
-                }
+                client.DefaultRequestHeaders.Add("type", type);          
+                //client.Timeout = TimeSpan.FromSeconds(60);
 
-                client.DefaultRequestHeaders.Add("type", type);
-               
                 var response = await client.PostAsync(new Uri(webappURL + "/event/fm/health"), data);
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [HttpClientTransfer : PostWebAPI] {json} Send To WebApp");
-
-                result = response.StatusCode.ToString();
-
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [HttpClientTransfer : PostWebAPI] {response.StatusCode} Received From WebApp");
 
                 client.Dispose();
                 client = null;

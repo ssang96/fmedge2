@@ -120,7 +120,7 @@ namespace fmedge
                 if (desiredProperties["DataTimeInterval"] != null)
                 {
                     dataReceiveInterval = desiredProperties["DataTimeInterval"];
-                    reportedProperties["CheckInterval"] = dataReceiveInterval;
+                    reportedProperties["DataTimeInterval"] = dataReceiveInterval;
 
                     Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} Data Time Interval : {dataReceiveInterval}");
                 }
