@@ -30,18 +30,18 @@ namespace fmedge.Util
                 client = new HttpClient();
 
                 client.DefaultRequestHeaders.Add("type", type);          
-                //client.Timeout = TimeSpan.FromSeconds(60);
+                client.Timeout = TimeSpan.FromSeconds(60);
 
                 var response = await client.PostAsync(new Uri(webappURL + "/event/fm/health"), data);
 
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [HttpClientTransfer : PostWebAPI] {json} Send To WebApp");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [HttpClientTransfer : PostWebAPI] {json} Send To WebApp and Receive {response.StatusCode}");
 
                 client.Dispose();
                 client = null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [PostWebAPI Connected Error] {ex.Message}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [PostWebAPI connected error] {ex.Message}");
                 result = ex.Message;
             }
             finally
