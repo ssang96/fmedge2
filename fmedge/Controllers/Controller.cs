@@ -127,6 +127,9 @@ namespace fmedge.Controllers
                 client.DefaultRequestHeaders.Add("type", type);
                 client.Timeout = TimeSpan.FromSeconds(60);
 
+                // UriKind.Absolute)
+                //Uri uri = new Uri(azureWebAppURL + "/event/fm/health", UriKind.Absolute);
+                //var response = await client.PostAsync(uri, data);
                 var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), data);
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostComStatus] {json} Send To WebApp and Receive {response.StatusCode}");
