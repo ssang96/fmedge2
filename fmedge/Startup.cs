@@ -24,8 +24,7 @@ namespace fmedge
             services.AddHttpClient("azurewebapp", httpClient =>
             {
                 httpClient.BaseAddress = new Uri(WebAppAddress);
-                httpClient.Timeout = TimeSpan.FromMinutes(2);
-                httpClient.DefaultRequestHeaders.ConnectionClose = false;
+                httpClient.Timeout = TimeSpan.FromMinutes(3);              
             });
         }
 

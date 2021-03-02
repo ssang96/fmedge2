@@ -127,9 +127,6 @@ namespace fmedge.Controllers
                 client.DefaultRequestHeaders.Add("type", type);
                 client.Timeout = TimeSpan.FromSeconds(60);
 
-                // UriKind.Absolute)
-                //Uri uri = new Uri(azureWebAppURL + "/event/fm/health", UriKind.Absolute);
-                //var response = await client.PostAsync(uri, data);
                 var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), data);
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostComStatus] {json} Send To WebApp and Receive {response.StatusCode}");
@@ -162,9 +159,10 @@ namespace fmedge.Controllers
                 StringContent stringData = new StringContent(data, Encoding.UTF8, "application/json");
 
                 client.DefaultRequestHeaders.Add("type", type);
-                var response = await client.PostAsync("/event/fm/status", stringData);
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
+
+                var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/status"), stringData);
             }
             catch (Exception ex)
             {
@@ -184,9 +182,9 @@ namespace fmedge.Controllers
                 StringContent stringData = new StringContent(data, Encoding.UTF8, "application/json");
 
                 client.DefaultRequestHeaders.Add("type", type);
-                var response = await client.PostAsync("/event/fm/health", stringData);
 
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostHealth] {data} Send To WebApp");
+                var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), stringData);               
             }
             catch (Exception ex)
             {
