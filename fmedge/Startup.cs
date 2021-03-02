@@ -14,7 +14,7 @@ namespace fmedge
         {
             Configuration = configuration;
         }
-        
+
         public IConfiguration Configuration { get; }
 
         public void ConfigureServices(IServiceCollection services)
@@ -24,9 +24,9 @@ namespace fmedge
             services.AddHttpClient("azurewebapp", httpClient =>
             {
                 httpClient.BaseAddress = new Uri(WebAppAddress);
-                httpClient.Timeout = TimeSpan.FromMinutes(3);
-                //httpClient.DefaultRequestHeaders.ConnectionClose = false;
-            });          
+                httpClient.Timeout = TimeSpan.FromMinutes(2);
+                httpClient.DefaultRequestHeaders.ConnectionClose = false;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

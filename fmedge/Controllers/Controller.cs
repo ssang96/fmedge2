@@ -40,7 +40,7 @@ namespace fmedge.Controllers
         /// 초기화
         /// </summary>
         public Controller()
-        { 
+        {
             comCheckTimer = new Timer();
             comCheckTimer.Interval = checkTimeInterval * 1000;
 
@@ -52,13 +52,13 @@ namespace fmedge.Controllers
         /// 생성자
         /// 초기화int.Parse(hostPort), azureWebAppAddress, checkInterval
         /// </summary>
-        public Controller(string webapp, int interval, int dataTimeInterval )
+        public Controller(string webapp, int interval, int dataTimeInterval)
         {
             comCheckTimer = new Timer();
 
-            checkTimeInterval       = interval;
-            azureWebAppURL          = webapp;
-            checkDataTimeInterval   = dataTimeInterval;
+            checkTimeInterval = interval;
+            azureWebAppURL = webapp;
+            checkDataTimeInterval = dataTimeInterval;
 
             comCheckTimer.Interval = checkTimeInterval * 1000;
 
@@ -91,13 +91,13 @@ namespace fmedge.Controllers
                     //수신한 데이터가 없음
                     if (timeDiff.TotalMinutes >= checkDataTimeInterval)
                     {
-                        dataType = "emergency";                     
+                        dataType = "emergency";
                         comHttpPacket.inspection_result_val = "message not received";
                         comHttpPacket.inspection_result_cd = "1";
                     }
                     else //정상
                     {
-                        dataType = "general";      
+                        dataType = "general";
                         comHttpPacket.inspection_result_val = "message received";
                         comHttpPacket.inspection_result_cd = "0";
                     }
@@ -154,15 +154,15 @@ namespace fmedge.Controllers
         public static async Task<string> PostStatus(HttpClient client, string data, string type)
         {
             string result = string.Empty;
-        
+
             try
             {
-                lastReceveDateTime = DateTime.Now;             
+                lastReceveDateTime = DateTime.Now;
 
                 StringContent stringData = new StringContent(data, Encoding.UTF8, "application/json");
 
                 client.DefaultRequestHeaders.Add("type", type);
-                var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/status"), stringData);
+                var response = await client.PostAsync("/event/fm/status", stringData);
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
             }
@@ -170,7 +170,7 @@ namespace fmedge.Controllers
             {
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostStatus error] {ex.Message}");
                 result = ex.Message;
-            }    
+            }
 
             return result;
         }
@@ -184,7 +184,7 @@ namespace fmedge.Controllers
                 StringContent stringData = new StringContent(data, Encoding.UTF8, "application/json");
 
                 client.DefaultRequestHeaders.Add("type", type);
-                var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), stringData);
+                var response = await client.PostAsync("/event/fm/health", stringData);
 
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
             }

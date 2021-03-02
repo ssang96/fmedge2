@@ -63,9 +63,9 @@ namespace fmedge.Controllers
                 var type = Request.Headers["Type"].ToString();
                 String jsonData = JsonConvert.SerializeObject(value);
 
-                var client = httpClientFactory.CreateClient("azurewebapp");               
-                
-                Task<string> task = Task.Run<string>(async () => await Controller.PostHealth(client, jsonData, type));             
+                var client = httpClientFactory.CreateClient("azurewebapp");
+
+                Task<string> task = Task.Run<string>(async () => await Controller.PostHealth(client, jsonData, type));
             }
             catch(Exception ex)
             {
