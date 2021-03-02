@@ -16,12 +16,18 @@ namespace fmedge.Controllers
         private readonly IHttpClientFactory httpClientFactory;
 
         /// <summary>
+        /// Http 데이터 전송을 위한 HttpClient 객체
+        /// </summary>
+        private HttpClient client;
+
+        /// <summary>
         /// 생성자(DI)
         /// </summary>
         /// <param name="httpClientFactory"></param>
         public FmController(IHttpClientFactory httpClientFactory)
         {
             this.httpClientFactory = httpClientFactory;
+            client = httpClientFactory.CreateClient("azurewebapp");
         }
 
         // POST fm/status
@@ -30,14 +36,12 @@ namespace fmedge.Controllers
         {
             EventResponse response = new EventResponse();
             response.resultCode = "OK";
-            Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Event Status Received {value}");
-
+          
             try
             {
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Event Status Received {value}");
                 var type = Request.Headers["Type"].ToString();
                 var jsonData = JsonConvert.SerializeObject(value);
-
-                var client = httpClientFactory.CreateClient("azurewebapp");
 
                 Task<string> task = Task.Run<string>(async () => await Controller.PostStatus(client, jsonData, type));
             }
@@ -62,8 +66,6 @@ namespace fmedge.Controllers
 
                 var type = Request.Headers["Type"].ToString();
                 String jsonData = JsonConvert.SerializeObject(value);
-
-                var client = httpClientFactory.CreateClient("azurewebapp");
 
                 Task<string> task = Task.Run<string>(async () => await Controller.PostHealth(client, jsonData, type));
             }
