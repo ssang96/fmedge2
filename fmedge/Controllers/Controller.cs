@@ -159,14 +159,12 @@ namespace fmedge.Controllers
                 StringContent stringData = new StringContent(data, Encoding.UTF8, "application/json");
 
                 client.DefaultRequestHeaders.Add("type", type);
-
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
-
                 var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/status"), stringData);
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostStatus error] {ex.Message}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostStatus error] {ex.StackTrace}");
                 result = ex.Message;
             }
 
@@ -183,12 +181,12 @@ namespace fmedge.Controllers
 
                 client.DefaultRequestHeaders.Add("type", type);
 
+                var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), stringData);
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostHealth] {data} Send To WebApp");
-                var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), stringData);               
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostHealth error] {ex.Message}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostHealth error] {ex.StackTrace}");
                 result = ex.Message;
             }
 
