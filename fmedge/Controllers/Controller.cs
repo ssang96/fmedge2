@@ -150,7 +150,7 @@ namespace fmedge.Controllers
 
         public static async Task<string> PostStatus(HttpClient client, string data, string type)
         {
-            string result = string.Empty;
+            string result = string.Empty;            
 
             try
             {
@@ -164,7 +164,8 @@ namespace fmedge.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostStatus error] {ex.StackTrace}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostStatus error] Data : {data}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostStatus error] {ex.Message}");              
                 result = ex.Message;
             }
 
@@ -174,7 +175,7 @@ namespace fmedge.Controllers
         public static async Task<string> PostHealth(HttpClient client, string data, string type)
         {
             string result = string.Empty;
-
+            
             try
             {
                 StringContent stringData = new StringContent(data, Encoding.UTF8, "application/json");
@@ -186,7 +187,8 @@ namespace fmedge.Controllers
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostHealth error] {ex.StackTrace}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostHealth error] Data : {data}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Contoller : PostHealth error] {ex.Message}");
                 result = ex.Message;
             }
 
