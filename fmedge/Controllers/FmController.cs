@@ -16,18 +16,12 @@ namespace fmedge.Controllers
         private readonly IHttpClientFactory httpClientFactory;
 
         /// <summary>
-        /// Http 데이터 전송을 위한 HttpClient 객체
-        /// </summary>
-        private HttpClient client;
-
-        /// <summary>
         /// 생성자(DI)
         /// </summary>
         /// <param name="httpClientFactory"></param>
         public FmController(IHttpClientFactory httpClientFactory)
         {
-            this.httpClientFactory = httpClientFactory;
-            client = httpClientFactory.CreateClient("azurewebapp");
+            this.httpClientFactory = httpClientFactory;            
         }
 
         // POST fm/status
@@ -36,19 +30,28 @@ namespace fmedge.Controllers
         {
             EventResponse response = new EventResponse();
             response.resultCode = "OK";
-          
+            HttpClient client = null;
+
             try
             {
+                client = httpClientFactory.CreateClient("azurewebapp");
+
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Event Status Received {value}");
                 var type = Request.Headers["Type"].ToString();
                 var jsonData = JsonConvert.SerializeObject(value);
 
-                Task<string> task = Task.Run<string>(async () => await Controller.PostStatus(client, jsonData, type));
+                Task<bool> task = Task.Run<bool>(async () => await Controller.PostStatus(client, jsonData, type));
+
+                if (!task.Result)
+                {
+                    client = httpClientFactory.CreateClient("azurewebapp");
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Re-Send Event Status {value}");
+                    Task<bool> secondTask = Task.Run<bool>(async () => await Controller.PostStatus(client, jsonData, type));
+                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [FmController : status error] {ex.Message}");
-                response.resultCode = "NOK";
             }
 
             return Ok(JsonConvert.SerializeObject(response));
@@ -59,15 +62,23 @@ namespace fmedge.Controllers
         public IActionResult health([FromBody] EventHealth value)
         {
             EventResponse response = new EventResponse();
+            HttpClient client = null;
 
             try
             {
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Event Health Received {value.ToString()}");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Event Health Received {value}");
 
                 var type = Request.Headers["Type"].ToString();
                 String jsonData = JsonConvert.SerializeObject(value);
 
-                Task<string> task = Task.Run<string>(async () => await Controller.PostHealth(client, jsonData, type));
+                Task<bool> task = Task.Run<bool>(async () => await Controller.PostHealth(client, jsonData, type));
+
+                if (!task.Result)
+                {
+                    client = httpClientFactory.CreateClient("azurewebapp");
+                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Re-Send Event Health {value}");
+                    Task<bool> secondTask = Task.Run<bool>(async () => await Controller.PostHealth(client, jsonData, type));
+                }
             }
             catch(Exception ex)
             {
