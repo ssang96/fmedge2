@@ -102,12 +102,6 @@ namespace fmedge.Controllers
                         comHttpPacket.inspection_result_cd = "0";
                     }
                     Task<bool> task = Task.Run<bool>(async () => await PostComStatus(comHttpPacket, dataType));
-
-                    if (!task.Result)
-                    {
-                        Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : CommCheck] Re-Send ComStatus");
-                        Task<bool> secondTask = Task.Run<bool>(async () => await PostComStatus(comHttpPacket, dataType));
-                    }
                 }
             }
             catch (Exception ex)
@@ -137,7 +131,7 @@ namespace fmedge.Controllers
                 client = new HttpClient();
 
                 client.DefaultRequestHeaders.Add("type", type);
-                client.Timeout = TimeSpan.FromSeconds(5);
+                client.Timeout = TimeSpan.FromMinutes(2);
 
                 var response = await client.PostAsync(new Uri(azureWebAppURL + "/event/fm/health"), data);
 

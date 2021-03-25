@@ -41,13 +41,6 @@ namespace fmedge.Controllers
                 var jsonData = JsonConvert.SerializeObject(value);
 
                 Task<bool> task = Task.Run<bool>(async () => await Controller.PostStatus(client, jsonData, type));
-
-                if (!task.Result)
-                {
-                    client = httpClientFactory.CreateClient("azurewebapp");
-                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Re-Send Event Status {value}");
-                    Task<bool> secondTask = Task.Run<bool>(async () => await Controller.PostStatus(client, jsonData, type));
-                }
             }
             catch (Exception ex)
             {
@@ -72,13 +65,6 @@ namespace fmedge.Controllers
                 String jsonData = JsonConvert.SerializeObject(value);
 
                 Task<bool> task = Task.Run<bool>(async () => await Controller.PostHealth(client, jsonData, type));
-
-                if (!task.Result)
-                {
-                    client = httpClientFactory.CreateClient("azurewebapp");
-                    Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Re-Send Event Health {value}");
-                    Task<bool> secondTask = Task.Run<bool>(async () => await Controller.PostHealth(client, jsonData, type));
-                }
             }
             catch(Exception ex)
             {
