@@ -51,7 +51,7 @@ namespace fmedge.UTIL
                 httpClient.DefaultRequestHeaders.Add("type", type);
                 var response = await httpClient.PostAsync("/event/fm/health", stringData);
 
-                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostStatus] {data} Send To WebApp");
+                Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} [Controller : PostHealth] {data} Send To WebApp");
             }
             catch (Exception ex)
             {

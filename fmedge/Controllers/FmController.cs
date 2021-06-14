@@ -59,12 +59,16 @@ namespace fmedge.Controllers
 
             try
             {
+                client = httpClientFactory.CreateClient("azurewebapp");
+
                 Console.WriteLine($"{DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss.fff")} Event Health Received {value}");
 
                 var type = Request.Headers["Type"].ToString();
+
+                value.type = type;
                 String jsonData = JsonConvert.SerializeObject(value);
 
-                Task<bool> task = Task.Run<bool>(async () => await Controller.PostHealth(client, jsonData, type));
+                Task<bool> task = Task.Run<bool>(async () => await Controller.PostHealth(client, jsonData, type));            
             }
             catch(Exception ex)
             {
